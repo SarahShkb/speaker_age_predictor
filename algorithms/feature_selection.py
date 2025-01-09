@@ -1,11 +1,9 @@
-import pandas as pd
 import matplotlib.pyplot as plt
 from sklearn.linear_model import Lasso
-from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
+from preprocessing import z_score_normalization
 
-def plot_correlation():
-    train_data = pd.read_csv('data/development.csv')
+def plot_correlation(train_data):
     target_column = train_data.columns[2]
     for feature in train_data.columns:
         if feature != target_column:  
@@ -15,9 +13,7 @@ def plot_correlation():
             plt.show()
 
 
-def calculate_correlation():
-    train_data = pd.read_csv('data/development.csv', na_values=['ND']).dropna()
-    
+def calculate_correlation(train_data): 
     # Calculate the correlation coefficient
     corr_coef = train_data.select_dtypes(include=['int64', 'float64']).corrwith(train_data['age'])
 
@@ -25,9 +21,7 @@ def calculate_correlation():
     print(corr_coef)
 
 
-def lasso_feature_selection():
-    train_data = pd.read_csv('data/development.csv')
-
+def lasso_feature_selection(train_data):
     # Split the data into features (X) and target (y)
     X = train_data.drop('age', axis=1).select_dtypes(include=['int64', 'float64'])
     y = train_data['age']
@@ -35,9 +29,8 @@ def lasso_feature_selection():
     # Split the data into training and testing sets
     X_train, y_train, = train_test_split(X, y, test_size=0.2, random_state=42)
 
-    # Scale the data
-    scaler = StandardScaler()
-    X_train_scaled = scaler.fit_transform(X_train)
+    # Normalize the data
+    X_train_scaled = z_score_normalization(X_train)
 
     # Create a Lasso object with alpha=0.5
     lasso = Lasso(alpha=0.5)
@@ -58,3 +51,12 @@ def lasso_feature_selection():
     print("Selected features:")
     for i in selected_features:
         print(feature_names[i])
+
+
+
+# both correlation and Lasso agreed on these 3 attributes:
+# hnr
+# num_pauses
+# silence_duration
+# For making sure to prevent underfitting, I chose one attribute from Lasso with the greatest correlation,
+# mean_pitch, and the second highest correlation, num_words
