@@ -6,7 +6,7 @@ def z_score_normalization(data):
     scaler = StandardScaler()
 
     # Fit the scaler to the data and transform it
-    df_normalized = scaler.fit_transform(data)
+    df_normalized = scaler.fit_transform(data.select_dtypes(include=['int64', 'float64']))
 
     # Print the normalized data
     return df_normalized

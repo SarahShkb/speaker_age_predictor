@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 from sklearn.linear_model import Lasso
 from sklearn.model_selection import train_test_split
-from preprocessing import z_score_normalization
+from algorithms.preprocessing import z_score_normalization
 
 def plot_correlation(train_data):
     target_column = train_data.columns[2]
